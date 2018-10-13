@@ -1,0 +1,60 @@
+package com.mkw.core.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mkw.annotation.Logs;
+import com.mkw.annotation.Verify;
+import com.mkw.constant.Operate;
+import com.mkw.core.service.FoodItemService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.util.AjaxUtils;
+
+@RequestMapping("/foodItem")
+@Controller
+public class FoodItemController {
+	
+	@Autowired
+	private FoodItemService foodItemService;
+	
+	@RequestMapping("")
+	@Verify(notNull="authorId")
+	@Logs(operate=Operate.SELECT, module="测试控制器", remark="获取菜品列表信息")
+	public void getFoodItemList(HttpServletRequest request,String authorId,HttpServletResponse response) throws Exception{
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		DataInfo foodItemList = foodItemService.findListByModel(dataInfo);
+		AjaxUtils.outJson(response, foodItemList);
+	}
+	
+	@RequestMapping("/add")
+	@Verify(notNull="authorId")
+	@Logs(operate=Operate.SELECT, module="测试控制器", remark="添加菜品信息")
+	public String createFoodItem(HttpServletRequest request,String authorId) throws Exception{
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		DataInfo foodItemList = foodItemService.addModel(dataInfo, authorId);
+		return "xxx";
+	}
+	
+	@RequestMapping("/importData")
+	@Verify(notNull="authorId")
+	@Logs(operate=Operate.INSERT,module="测试控制器",remark="导入excel数据")
+	public String importData(HttpServletRequest request,String authorId){
+		DataInfo parseJson = AjaxUtils.parseJson(request);
+		//
+		return authorId;
+	}
+	
+	@RequestMapping("/findfoodItemByname")
+	@Verify(notNull="id")
+	@Logs(operate=Operate.UPDATE, module="测试控制器", remark="根据菜品名查询对象信息")
+	public String getFoodItemByname(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		foodItemService.findListByModel(dataInfo);
+		//AjaxUtils.outJson(response, dataInfo);
+		return null;
+	}
+}

@@ -1,0 +1,116 @@
+package com.mkw.core.service.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mkw.core.common.SuperServiceImpl;
+import com.mkw.core.entity.Account;
+import com.mkw.core.mapper.AccountMapper;
+import com.mkw.core.service.AccountService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.plugins.PageInfo;
+import com.mkw.util.EncryptUtil;
+
+/**
+ * <p>
+ * 管理员表 服务实现类
+ * </p>
+ *
+ * @author xiaojiayi
+ * @since 2018-09-06
+ */
+@Service
+@Transactional
+public class AccountServiceImpl extends SuperServiceImpl<AccountMapper, Account> implements AccountService {
+	
+	@Override
+	public DataInfo addModel(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			Account account = dataInfo.getRequestData().toJavaObject(Account.class);
+			account.setLoginPass(EncryptUtil.MD5(account.getLoginPass()));
+			insert(account, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			Account account = dataInfo.getRequestData().toJavaObject(Account.class);
+			account.setLoginPass(EncryptUtil.MD5(account.getLoginPass()));
+			update(account, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo remoteModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			String fid=dataInfo.getRequestData().getString("id");
+			Integer id=Integer.parseInt(fid);
+			mapper.deleteById(id);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editStatusById(DataInfo dataInfo, String authorId) throws Exception {
+		Account account=new Account();
+		if (StringUtils.isNotBlank(authorId)) {
+			Integer status=Integer.parseInt(dataInfo.getRequestData().getString("status"));
+			String id=dataInfo.getRequestData().getString("id");
+			account.setId(id);
+			account.setStatus(status);
+			mapper.updateById(account);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo findModelById(DataInfo dataInfo) throws Exception {
+		String id = dataInfo.getRequestData().getString("id");
+		return success(dataInfo, select(id));
+	}
+
+	@Override
+	public DataInfo findListByModel(DataInfo dataInfo) throws Exception {
+		Account account = dataInfo.getRequestData().toJavaObject(Account.class);
+		List<Account> selectList = selectList(account);
+		return success(dataInfo, selectList);
+	}
+
+	@Override
+	public PageInfo findListByPage(PageInfo pageInfo) throws Exception {
+		pageInfo.setData(mapper.queryByPageData(pageInfo));
+		pageInfo.setCount(mapper.queryByPageCount(pageInfo));
+		return pageInfo;
+	}
+
+	@Override
+	public DataInfo checkLogin(DataInfo dataInfo, int status) throws Exception {
+		String loginName = dataInfo.getRequestData().getString("loginName");
+		String loginPass = dataInfo.getRequestData().getString("loginPass");
+		String roomId = dataInfo.getRequestData().getString("roomId");
+		
+		Account account = new Account();
+		account.setLoginName(loginName);
+		account.setLoginPass(EncryptUtil.MD5(loginPass));
+		List<Account> accounts = selectList(account);
+		
+		if (null == accounts || accounts.size() == 0) {
+			return fail(dataInfo, ERROR_LOGIN);
+		} else if (2 == status && !roomId.equals(accounts.get(0).getRoomId())) {// 企业版登陆
+			return fail(dataInfo, ERROR_ROOM_ID);
+		}
+		
+		return success(dataInfo, accounts.get(0));
+	}
+	
+}

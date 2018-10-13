@@ -1,0 +1,249 @@
+package com.mkw.core.entity;
+
+import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.mkw.core.common.SuperEntity;
+
+/**
+ * <p>
+ * 菜品表
+ * </p>
+ *
+ * @author xiaojiayi
+ * @since 2018-09-06
+ */
+@TableName("food_item")
+public class FoodItem extends SuperEntity {
+    private static final long serialVersionUID = 1L;
+    /**
+     * 门店编号
+     */
+	@TableField("merchant_id")
+	private String merchantId;
+    /**
+     * 菜品名称
+     */
+	private String name;
+    /**
+     * 菜品编码
+     */
+	private String code;
+    /**
+     * 原始价格
+     */
+	@TableField("orginal_price")
+	private BigDecimal orginalPrice;
+    /**
+     * 价格
+     */
+	private BigDecimal price;
+    /**
+     * 菜品图片
+     */
+	private String image;
+    /**
+     * 是否在售（1-是 0-否）
+     */
+	@TableField("is_sale")
+	private String isSale;
+    /**
+     * 菜品类型(0:精美小炒1:特色菜品 2:老火靓汤3:田园时蔬4:东北凉菜 5:好吃的 6:其他)
+     */
+	private String type;
+    /**
+     * 备用字段1
+     */
+	private String fied1;
+    /**
+     * 备用字段2
+     */
+	private String fied2;
+    /**
+     * 优惠价
+     */
+	@TableField("preferencial_price")
+	private BigDecimal preferencialPrice;
+    /**
+     * 菜品库存
+     */
+	@TableField("ku_cun")
+	private Integer kuCun;
+    /**
+     * 内容
+     */
+	private String content;
+    /**
+     * 菜单组
+     */
+	@TableField("food_group")
+	private String foodGroup;
+	/**
+     * 门店编号
+     */
+	public String getMerchantId() {
+		return merchantId;
+	}
+	/**
+     * 门店编号
+     */
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+	/**
+     * 菜品名称
+     */
+	public String getName() {
+		return name;
+	}
+	/**
+     * 菜品名称
+     */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+     * 菜品编码
+     */
+	public String getCode() {
+		return code;
+	}
+	/**
+     * 菜品编码
+     */
+	public void setCode(String code) {
+		this.code = code;
+	}
+	/**
+     * 原始价格
+     */
+	public BigDecimal getOrginalPrice() {
+		return orginalPrice;
+	}
+	/**
+     * 原始价格
+     */
+	public void setOrginalPrice(BigDecimal orginalPrice) {
+		this.orginalPrice = orginalPrice;
+	}
+	/**
+     * 价格
+     */
+	public BigDecimal getPrice() {
+		return price;
+	}
+	/**
+     * 价格
+     */
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+	/**
+     * 菜品图片
+     */
+	public String getImage() {
+		return image;
+	}
+	/**
+     * 菜品图片
+     */
+	public void setImage(String image) {
+		this.image = image;
+	}
+	/**
+     * 是否在售（1-是 0-否）
+     */
+	public String getIsSale() {
+		return isSale;
+	}
+	/**
+     * 是否在售（1-是 0-否）
+     */
+	public void setIsSale(String isSale) {
+		this.isSale = isSale;
+	}
+	/**
+     * 菜品类型(0:精美小炒1:特色菜品 2:老火靓汤3:田园时蔬4:东北凉菜 5:好吃的 6:其他)
+     */
+	public String getType() {
+		return type;
+	}
+	/**
+     * 菜品类型(0:精美小炒1:特色菜品 2:老火靓汤3:田园时蔬4:东北凉菜 5:好吃的 6:其他)
+     */
+	public void setType(String type) {
+		this.type = type;
+	}
+	/**
+     * 备用字段1
+     */
+	public String getFied1() {
+		return fied1;
+	}
+	/**
+     * 备用字段1
+     */
+	public void setFied1(String fied1) {
+		this.fied1 = fied1;
+	}
+	/**
+     * 备用字段2
+     */
+	public String getFied2() {
+		return fied2;
+	}
+	/**
+     * 备用字段2
+     */
+	public void setFied2(String fied2) {
+		this.fied2 = fied2;
+	}
+	/**
+     * 优惠价
+     */
+	public BigDecimal getPreferencialPrice() {
+		return preferencialPrice;
+	}
+	/**
+     * 优惠价
+     */
+	public void setPreferencialPrice(BigDecimal preferencialPrice) {
+		this.preferencialPrice = preferencialPrice;
+	}
+	/**
+     * 菜品库存
+     */
+	public Integer getKuCun() {
+		return kuCun;
+	}
+	/**
+     * 菜品库存
+     */
+	public void setKuCun(Integer kuCun) {
+		this.kuCun = kuCun;
+	}
+	/**
+     * 内容
+     */
+	public String getContent() {
+		return content;
+	}
+	/**
+     * 内容
+     */
+	public void setContent(String content) {
+		this.content = content;
+	}
+	/**
+     * 菜单组
+     */
+	public String getFoodGroup() {
+		return foodGroup;
+	}
+	/**
+     * 菜单组
+     */
+	public void setFoodGroup(String foodGroup) {
+		this.foodGroup = foodGroup;
+	}
+}

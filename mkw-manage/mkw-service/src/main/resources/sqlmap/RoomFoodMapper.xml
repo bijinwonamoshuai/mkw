@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.RoomFoodMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.RoomFood">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态(0-上架 2-下架) -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="group_id" property="groupId" /><!-- 门店菜品组编号 -->
+        <result column="package_id" property="packageId" /><!-- 门店菜品组编号 -->
+        <result column="show_name" property="showName" /><!-- 显示名称 -->
+        <result column="show_price" property="showPrice" /><!-- 显示价格 -->
+        <result column="show_stock" property="showStock" /><!-- 显示库存 -->
+    </resultMap>
+
+	<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			rf.id,
+			rf.status,
+			rf.show_name as showName,
+			rf.show_price as showPrice,
+			rf.show_stock as showStock,
+			rg.name as groupName,
+			fp.img
+		from room_food rf 
+			 left join room_group rg on rf.group_id = rg.id
+			 left join food_package fp on rf.package_id = fp.id
+		<where>
+			rf.enable = 1 and rg.enable = 1 and fp.enable = 1
+			<if test="params.roomId != '' and params.roomId != 'null' and params.roomId != null">
+				and rg.room_id = #{params.roomId}
+			</if>
+			<if test="params.status != '' and params.status != 'null' and params.status != null">
+				and rg.status = #{params.status}
+			</if>
+			<if test="params.foodName != '' and params.foodName != 'null' and params.foodName != null">
+				<![CDATA[ and rf.show_name like concat('%', #{params.foodName}, '%') ]]>
+			</if>
+			<if test="params.groupName != '' and params.groupName != 'null' and params.groupName != null">
+				<![CDATA[ and rg.name like concat('%', #{params.groupName}, '%') ]]>
+			</if>
+			<if test="params.foodStatus != '' and params.foodStatus != 'null' and params.foodStatus != null">
+				and rf.status = #{params.foodStatus}
+			</if>
+		</where>
+		order by rf.ctime desc, rf.mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select 
+			count(rf.id)
+		from room_food rf 
+			 left join room_group rg on rf.group_id = rg.id
+			 left join food_package fp on rf.package_id = fp.id
+		<where>
+			rf.enable = 1 and rg.enable = 1 and fp.enable = 1
+			<if test="params.roomId != '' and params.roomId != 'null' and params.roomId != null">
+				and rg.room_id = #{params.roomId}
+			</if>
+			<if test="params.status != '' and params.status != 'null' and params.status != null">
+				and rg.status = #{params.status}
+			</if>
+			<if test="params.foodName != '' and params.foodName != 'null' and params.foodName != null">
+				<![CDATA[ and rf.show_name like concat('%', #{params.foodName}, '%') ]]>
+			</if>
+			<if test="params.groupName != '' and params.groupName != 'null' and params.groupName != null">
+				<![CDATA[ and rg.name like concat('%', #{params.groupName}, '%') ]]>
+			</if>
+			<if test="params.foodStatus != '' and params.foodStatus != 'null' and params.foodStatus != null">
+				and rf.status = #{params.foodStatus}
+			</if>
+		</where>
+	</select>
+
+</mapper>

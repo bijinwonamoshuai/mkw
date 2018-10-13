@@ -1,0 +1,81 @@
+package com.mkw.core.web;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.mkw.annotation.Logs;
+import com.mkw.annotation.Verify;
+import com.mkw.constant.Operate;
+import com.mkw.core.common.SuperController;
+import com.mkw.core.entity.Role;
+import com.mkw.core.service.PermissionService;
+import com.mkw.core.service.RoleService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.plugins.PageInfo;
+import com.mkw.util.AjaxUtils;
+
+@Controller
+@RequestMapping("rolePermission")
+public class RolePermissionController extends SuperController {
+	@Resource
+	private PermissionService permissionService;
+	@Resource
+	private RoleService roleService;
+	
+	
+	@RequestMapping("rolePermission-list")
+	@Logs(operate = Operate.SELECT, module = "角色权限控制器", remark = "获取管理员列表页面")
+	public String rolePermissionList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		return "rolePermission/rolePermission-list";
+	}
+	
+	@RequestMapping("rolePermission-edit")
+	@Logs(operate = Operate.SELECT, module = "角色权限控制器", remark = "获取管理员编辑页面")
+	public String rolePermissionEdit(HttpServletRequest request, HttpServletResponse response, String id) throws Exception {
+		List<JSONObject> allPermission = permissionService.findAllPermission(id);
+		request.setAttribute("rolePermissionList", JSON.toJSONString(allPermission));
+		Role role = roleService.select(id);
+		request.setAttribute("roleInfo", role);
+		return "rolePermission/rolePermission-edit";
+	}
+	
+	@RequestMapping("add")
+	@Verify(notNull="status,name,permissionIds")
+	@Logs(operate = Operate.INSERT, module = "角色权限控制器", remark = "添加角色")
+	public void add(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		roleService.addModel(dataInfo, findAuthor(request));
+		AjaxUtils.outJson(response, dataInfo);
+	}
+	
+	@RequestMapping("edit")
+	@Verify(notNull="id,status,name,permissionIds")
+	@Logs(operate = Operate.UPDATE, module = "角色权限控制器", remark = "更新角色")
+	public void edit(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		roleService.editModelById(dataInfo, findAuthor(request));
+		AjaxUtils.outJson(response, dataInfo);
+	}
+	
+	@RequestMapping("list")
+	@Logs(operate=Operate.SELECT, module="角色权限控制器", remark="获取分页数据")
+	public void list(HttpServletRequest request, HttpServletResponse response, int page, int limit) throws Exception {    	
+    	JSONObject params = new JSONObject();
+		params.put("name", request.getParameter("name"));
+		params.put("status", request.getParameter("status"));
+		
+		PageInfo pageInfo = new PageInfo(Integer.valueOf(page), Integer.valueOf(limit), params);
+		pageInfo = roleService.findListByPage(pageInfo);
+		AjaxUtils.outJson(response, pageInfo);
+	}
+	
+}

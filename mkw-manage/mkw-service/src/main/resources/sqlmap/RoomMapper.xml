@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.RoomMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.Room">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="name" property="name" /><!-- 门店名称 -->
+        <result column="image_url" property="imageUrl" /><!-- 门店图片 -->
+        <result column="super_id" property="superId" /><!-- 上级门店编号 -->
+        <result column="address" property="address" /><!-- 门店地址 -->
+        <result column="open_time" property="openTime" /><!-- 营业开始时间 -->
+        <result column="close_time" property="closeTime" /><!-- 营业结束时间 -->
+        <result column="fied1" property="fied1" /><!-- 备用字段1 -->
+        <result column="fied2" property="fied2" /><!-- 备用字段2 -->
+    </resultMap>
+
+	<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			r.id as id,
+			r.name as name,
+			r.image_url as imageUrl,
+			r.address as address
+			
+		from room r
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+			<if test="params.roomid != '' and params.roomid != 'null' and params.roomid != null">
+				and id=#{params.roomid}
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from room
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.FoodItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.FoodItem">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态(0-上架 2-下架) -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="merchant_id" property="merchantId" /><!-- 门店编号 -->
+        <result column="name" property="name" /><!-- 菜品名称 -->
+        <result column="code" property="code" /><!-- 菜品编码 -->
+        <result column="orginal_price" property="orginalPrice" /><!-- 原始价格 -->
+        <result column="price" property="price" /><!-- 价格 -->
+        <result column="image" property="image" /><!-- 菜品图片 -->
+        <result column="is_sale" property="isSale" /><!-- 是否在售（1-是 0-否） -->
+        <result column="type" property="type" /><!-- 菜品类型(0:精美小炒1:特色菜品 2:老火靓汤3:田园时蔬4:东北凉菜 5:好吃的 6:其他) -->
+        <result column="fied1" property="fied1" /><!-- 备用字段1 -->
+        <result column="fied2" property="fied2" /><!-- 备用字段2 -->
+        <result column="preferencial_price" property="preferencialPrice" /><!-- 优惠价 -->
+        <result column="ku_cun" property="kuCun" /><!-- 菜品库存 -->
+        <result column="content" property="content" /><!-- 内容 -->
+        <result column="food_group" property="foodGroup" /><!-- 菜单组 -->
+    </resultMap>
+
+   <select id="queryByPageData" resultType="java.util.Map">
+		select 
+			f.food_group as foodGroup,
+			f.ku_cun as kuCun,
+			f.preferencial_price as preferencialPrice,
+			f.name as name,
+			f.image as image,
+			f.content as content,
+			f.merchant_id as merchantId,
+			f.price as price,
+			f.is_sale as isSale
+		from food_item f 
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from food_item
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

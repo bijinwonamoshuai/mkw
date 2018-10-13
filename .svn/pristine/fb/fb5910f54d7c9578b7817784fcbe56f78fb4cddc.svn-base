@@ -1,0 +1,63 @@
+package com.mkw.core.web;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mkw.annotation.Logs;
+import com.mkw.annotation.Verify;
+import com.mkw.constant.CodeConstant;
+import com.mkw.constant.Operate;
+import com.mkw.core.service.RoomService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.util.AjaxUtils;
+
+@RequestMapping("/company")
+@Controller
+public class RoomController {
+	@Autowired
+	private RoomService roomService;
+	
+	//企业版登陆
+	@RequestMapping("/login")
+	@Verify(notNull="authorId")
+	@Logs(operate=Operate.SELECT, module="测试控制器", remark="企业门店登陆信息")
+	public String login(HttpServletRequest request,String authorId) throws Exception{
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		DataInfo datainfo = roomService.login(dataInfo);
+		if (datainfo == null) {
+			datainfo.setCode(CodeConstant.ERROR_LOGIN);
+			datainfo.setMsg("当前用户不存在，请重新输入");
+			return "/login.html";
+		}
+		//放入session，一旦session失效的登录拦截
+		request.getSession().setAttribute("sessionId", datainfo);
+		datainfo.setCode(CodeConstant.SUCCESS);
+		datainfo.setMsg("登陆成功");
+		return "/index.html";
+		
+	}
+	
+	@RequestMapping("")
+	@Verify(notNull="authorId")
+	@Logs(operate=Operate.SELECT, module="测试控制器", remark="获取门店信息")
+	public String getMendianInfo(HttpServletRequest request,String authorId) throws Exception{
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		//dataInfo.getRequestData().getString("com")
+		//根据公司账户查询到公司版门店信息
+		roomService.select(null);
+		return "xxx";
+	}
+	
+	@RequestMapping("/editModelById")
+	@Verify(notNull="mdenchantId")
+	@Logs(operate=Operate.UPDATE, module="测试控制器", remark="根据公司门店id更新门店信息")
+	public String editModelById(HttpServletRequest request,String mdenchantId) throws Exception{
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		roomService.editModelById(dataInfo, mdenchantId);
+		return "xxx";
+	}
+	
+}

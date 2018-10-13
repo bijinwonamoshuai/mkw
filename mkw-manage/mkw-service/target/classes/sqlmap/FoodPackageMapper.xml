@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.FoodPackageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.FoodPackage">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="menu_id" property="menuId" /><!-- 所属菜单编号 -->
+        <result column="img" property="img" /><!-- 图片 -->
+        <result column="number_remaining" property="numberRemaining" /><!-- 库存 -->
+        <result column="original_price" property="originalPrice" /><!-- 原价 -->
+        <result column="same_package" property="samePackage" /><!-- 是否相同套餐，0不相同，1相同 -->
+        <result column="type" property="type" /><!-- 类型 -->
+        <result column="is_specials" property="isSpecials" /><!-- 是否特价菜：0否，1是 -->
+        <result column="price" property="price" /><!-- 现价 -->
+        <result column="dishes_names" property="dishesNames" /><!-- 套餐包含的单品名称 -->
+        <result column="name" property="name" /><!-- 名称 -->
+    </resultMap>
+
+	<select id="queryByPageData" resultMap="BaseResultMap">
+		select 
+			fp.*
+		from food_package fp
+		<where>
+			fp.enable = 1
+			<if test="params.groupId != '' and params.groupId != 'null' and params.groupId != null">
+				and not exists(select 1 from room_food where enable = 1 and package_id = fp.id and group_id = #{params.groupId})
+			</if>
+		</where>
+		order by type asc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select 
+			count(fp.id) 
+		from food_package fp
+		<where>
+			fp.enable = 1
+			<if test="params.groupId != '' and params.groupId != 'null' and params.groupId != null">
+				and not exists(select 1 from room_food where enable = 1 and package_id = fp.id and group_id = #{params.groupId})
+			</if>
+		</where>
+	</select>
+
+</mapper>

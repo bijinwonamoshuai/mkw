@@ -1,0 +1,76 @@
+layui.config({
+    base: '/mkw-client/static/extends/',
+    version: new Date().getTime()
+});
+layui.use(['table', 'jquery', 'form', 'layer', 'xdialog'], function() {
+	var table = layui.table;
+	var $ = layui.jquery;
+	var form = layui.form;
+	var layer = layui.layer;
+	var xdialog = layui.xdialog();
+	
+	//初始化table
+	table.render({
+		id: 'myTable',
+	    elem: '#tableContent',
+	    url: '/mkw-client/roomgroup/list.do',
+	    cols: [[
+	            {type:'checkbox'},
+	            {sort: true, field:'name', title: '菜品组名称'},
+	            {align:'left', title: '操作', toolbar: '#tablePage'}
+	    ]],
+	    page: true, //是否显示分页
+        limit: 50, //每页默认显示的数量
+        limits:[50,100,200,300,500,1000],
+	    width: 'full',
+	    height: 'full',
+	    cellMinWidth: 250,
+	    where: {
+	    	status: 1
+	    }
+	});
+	
+	//监听事件
+	table.on('tool(tableEvent)', function(obj) {
+		if(obj.event === 'edit') {
+			openPager('/mkw-client/roomgroup/roomGroup-edit.do?id=' + obj.data.id, '编辑');
+		} else if(obj.event === 'delete') {
+			execute('/mkw-client/roomgroup/delete.do', {id: obj.data.id}, function(e) {
+				alertify(1, '删除成功');
+				flushTable(searchCache, 1);
+			});
+		}else if(obj.event==='addFoods'){
+			openPager('/mkw-client/room-group/roomGroup-packages.do?id='+obj.data.id,'添加菜品系列')
+		}
+	});
+	
+	$("#addBtn").click(function() {
+		openPager('/mkw-client/roomgroup/roomGroup-edit.do', '添加');
+	});
+	
+	$("#searchBtn").click(function() {
+		xdialog.init({
+			title: '查询',
+			columns: [
+				{ type: 'text', name: 'name', label: '菜品组名称' }
+			],
+			buttons: [
+				{ label: '查询', id: 'queryBtn', icon: '&#xe615;' },
+				{ label: '重置', id: 'resetBtn', icon: '&#xe640;', color: 'layui-btn-primary' }
+			]
+		});
+		
+		xdialog.show(function(data) {
+			if (data == 'queryBtn') {
+				searchCache = xdialog.getFormData();
+				xdialog.closer();
+				flushTable(searchCache, 1);
+			}
+			if (data == 'resetBtn') {
+				xdialog.clearFormData();
+			}
+		});
+	});
+	
+	
+});

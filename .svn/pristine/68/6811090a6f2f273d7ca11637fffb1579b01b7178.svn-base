@@ -1,0 +1,106 @@
+package com.mkw.core.service.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.mkw.core.common.SuperServiceImpl;
+import com.mkw.core.entity.FoodItem;
+import com.mkw.core.mapper.FoodItemMapper;
+import com.mkw.core.service.FoodItemService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.plugins.PageInfo;
+
+/**
+ * <p>
+ * 菜品表 服务实现类
+ * </p>
+ *
+ * @author xiaojiayi
+ * @since 2018-09-06
+ */
+@Service
+@Transactional
+public class FoodItemServiceImpl extends SuperServiceImpl<FoodItemMapper, FoodItem> implements FoodItemService {
+	 
+	@Override
+	public DataInfo addModel(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			FoodItem foodItem = dataInfo.getRequestData().toJavaObject(FoodItem.class);
+			List<FoodItem> list = selectList(foodItem);
+			if (null != list && 0 < list.size()) {
+				return fail(dataInfo, ERROR_ROOM_NAME);
+			}
+			insert(foodItem, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			FoodItem foodItem = dataInfo.getRequestData().toJavaObject(FoodItem.class);
+			
+			FoodItem tempRoom = new FoodItem();
+			tempRoom.setName(foodItem.getName());
+			List<FoodItem> list = selectList(tempRoom);
+			if (null != list && 0 < list.size()) {
+				if (1 == list.size() && list.get(0).getId().equals(foodItem.getId())) {
+					// 自己
+				} else {
+					return fail(dataInfo, ERROR_ROOM_NAME);
+				}
+			}
+			update(foodItem, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo remoteModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			String fid=dataInfo.getRequestData().getString("id");
+			Integer id=Integer.parseInt(fid);
+			mapper.deleteById(id);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editStatusById(DataInfo dataInfo, String authorId) throws Exception {
+		FoodItem foodItem=new FoodItem();
+		if (StringUtils.isNotBlank(authorId)) {
+			Integer status=Integer.parseInt(dataInfo.getRequestData().getString("status"));
+			String id=dataInfo.getRequestData().getString("id");
+			foodItem.setId(id);
+			foodItem.setStatus(status);
+			mapper.updateById(foodItem);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo findModelById(DataInfo dataInfo) throws Exception {
+		String id = dataInfo.getRequestData().getString("id");
+		return success(dataInfo, select(id));
+	}
+
+	@Override
+	public DataInfo findListByModel(DataInfo dataInfo) throws Exception {
+		FoodItem foodItem = dataInfo.getRequestData().toJavaObject(FoodItem.class);
+		List<FoodItem> selectList = selectList(foodItem);
+		return success(dataInfo, selectList);
+	}
+
+	@Override
+	public PageInfo findListByPage(PageInfo pageInfo) throws Exception {
+		pageInfo.setData(mapper.queryByPageData(pageInfo));
+		pageInfo.setCount(mapper.queryByPageCount(pageInfo));
+		return pageInfo;
+	}
+}

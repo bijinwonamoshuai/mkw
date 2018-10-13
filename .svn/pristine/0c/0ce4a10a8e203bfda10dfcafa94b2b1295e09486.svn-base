@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.RolePermissionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.RolePermission">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="role_id" property="roleId" /><!-- 角色编号 -->
+        <result column="permission_id" property="permissionId" /><!-- 权限编号 -->
+    </resultMap>
+
+	<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			*
+		from role_permission
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from role_permission
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+	<update id="deleteRolePermission">
+		update role_permission set enable = 0, deleter = #{deleter}, dtime = #{dtime}
+		<where>
+			enable = 1
+			<if test="roleId != null">and role_id = #{roleId}</if>
+			<if test="array != null and array.length > 0">
+				and permission_id in
+				<foreach collection="array" item="item" open="(" separator="," close=")">
+		            #{item}
+		        </foreach>
+			</if>
+		</where>
+	</update>
+</mapper>

@@ -1,0 +1,135 @@
+package com.mkw.core.service.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.mkw.core.common.SuperServiceImpl;
+import com.mkw.core.entity.Room;
+import com.mkw.core.mapper.RoomMapper;
+import com.mkw.core.service.RoomService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.plugins.PageInfo;
+
+/**
+ * <p>
+ * 门店表 服务实现类
+ * </p>
+ * @author xiaojiayi
+ * @since 2018-09-06
+ */
+@Service
+@Transactional
+public class RoomServiceImpl extends SuperServiceImpl<RoomMapper, Room> implements RoomService {	
+	
+	@Override
+	public DataInfo addModel(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			Room room = dataInfo.getRequestData().toJavaObject(Room.class);
+			
+			List<Room> list = selectList(room);
+			if (null != list && 0 < list.size()) {
+				return fail(dataInfo, ERROR_ROOM_NAME);
+			}
+			
+			insert(room, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			Room room = dataInfo.getRequestData().toJavaObject(Room.class);
+			
+			Room tempRoom = new Room();
+			tempRoom.setName(room.getName());
+			List<Room> list = selectList(tempRoom);
+			if (null != list && 0 < list.size()) {
+				if (1 == list.size() && list.get(0).getId().equals(room.getId())) {
+					// 自己
+				} else {
+					return fail(dataInfo, ERROR_ROOM_NAME);
+				}
+			}
+			
+			update(room, authorId);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo remoteModelById(DataInfo dataInfo, String authorId) throws Exception {
+		if (StringUtils.isNotBlank(authorId)) {
+			String fid=dataInfo.getRequestData().getString("id");
+			Integer id=Integer.parseInt(fid);
+			mapper.deleteById(id);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo editStatusById(DataInfo dataInfo, String authorId) throws Exception {
+		Room room=new Room();
+		if (StringUtils.isNotBlank(authorId)) {
+			Integer status=Integer.parseInt(dataInfo.getRequestData().getString("status"));
+			String id=dataInfo.getRequestData().getString("id");
+			room.setId(id);
+			room.setStatus(status);
+			mapper.updateById(room);
+			return success(dataInfo, null);
+		}
+		return fail(dataInfo, SESSION_IS_EXCEPTION);
+	}
+
+	@Override
+	public DataInfo findModelById(DataInfo dataInfo) throws Exception {
+		String id = dataInfo.getRequestData().getString("id");
+		return success(dataInfo, select(id));
+	}
+
+	@Override
+	public DataInfo findListByModel(DataInfo dataInfo) throws Exception {
+		Room room = dataInfo.getRequestData().toJavaObject(Room.class);
+		List<Room> selectList = selectList(room);
+		return success(dataInfo, selectList);
+	}
+
+	@Override
+	public PageInfo findListByPage(PageInfo pageInfo) throws Exception {
+		pageInfo.setData(mapper.queryByPageData(pageInfo));
+		pageInfo.setCount(mapper.queryByPageCount(pageInfo));
+		return pageInfo;
+	}
+
+	//企业版登陆
+	@Override
+	public DataInfo login(DataInfo dataInfo) {
+		return dataInfo;
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public JSONArray findAllRoom() throws Exception {
+		List<Room> list = selectList(null);
+		if (null != list && 0 < list.size()) {
+			JSONArray jsonArray = new JSONArray();
+			for (Room room : list) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("label", room.getName());
+				jsonObject.put("value", room.getId());
+				jsonArray.add(jsonObject);
+			}
+			return jsonArray;
+		}
+		return null;
+	}
+}

@@ -1,0 +1,94 @@
+package com.mkw.core.service;
+
+import com.mkw.core.entity.RoomFood;
+import com.mkw.core.common.SuperService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.plugins.PageInfo;
+
+/**
+ * <p>
+ * 门店菜品组的菜品表 服务类
+ * </p>
+ *
+ * @author xiaojiayi
+ * @since 2018-09-11
+ */
+public interface RoomFoodService extends SuperService<RoomFood> {
+	
+	/**
+	 * @Description: 保存对象信息
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo addModel(DataInfo dataInfo, String groupId, String authorId) throws Exception;
+	
+	/**
+	 * @Description: 根据id更新对象信息
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo editModelById(DataInfo dataInfo, String authorId) throws Exception;
+	
+	/**
+	 * @Description: 根据id软删除对象信息
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo remoteModelById(DataInfo dataInfo, String authorId) throws Exception;
+	
+	/**
+	 * @Description: 根据id更新状态
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo editStatusById(DataInfo dataInfo, String authorId) throws Exception;
+	
+	/**
+	 * @Description: 根据id获取对象信息
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo findModelById(DataInfo dataInfo) throws Exception;
+	
+	/**
+	 * @Description: 根据实体获取列表数据
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public DataInfo findListByModel(DataInfo dataInfo) throws Exception;
+	
+	/**
+	 * @Description: 分页获取数据
+	 * @author xiaojiayi 
+	 * @date 2018年4月30日 下午7:13:26 
+	 * @param dataInfo
+	 * @param authorId
+	 * @return
+	 * @throws Exception
+	 */
+	public PageInfo findListByPage(PageInfo pageInfo) throws Exception;
+}

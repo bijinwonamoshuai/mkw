@@ -1,0 +1,84 @@
+package com.mkw.core.entity;
+
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.mkw.core.common.SuperEntity;
+
+/**
+ * <p>
+ * 菜品组表
+ * </p>
+ *
+ * @author xiaojiayi
+ * @since 2018-09-06
+ */
+@TableName("food_group")
+public class FoodGroup extends SuperEntity {
+    private static final long serialVersionUID = 1L;
+    /**
+     * 门店编号
+     */
+	@TableField("merchant_id")
+	private String merchantId;
+    /**
+     * 菜品组名称
+     */
+	@TableField("group_name")
+	private String groupName;
+    /**
+     * 备用字段1
+     */
+	private String fied1;
+    /**
+     * 备用字段2
+     */
+	private String fied2;
+	/**
+     * 门店编号
+     */
+	public String getMerchantId() {
+		return merchantId;
+	}
+	/**
+     * 门店编号
+     */
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+	/**
+     * 菜品组名称
+     */
+	public String getGroupName() {
+		return groupName;
+	}
+	/**
+     * 菜品组名称
+     */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+	/**
+     * 备用字段1
+     */
+	public String getFied1() {
+		return fied1;
+	}
+	/**
+     * 备用字段1
+     */
+	public void setFied1(String fied1) {
+		this.fied1 = fied1;
+	}
+	/**
+     * 备用字段2
+     */
+	public String getFied2() {
+		return fied2;
+	}
+	/**
+     * 备用字段2
+     */
+	public void setFied2(String fied2) {
+		this.fied2 = fied2;
+	}
+}

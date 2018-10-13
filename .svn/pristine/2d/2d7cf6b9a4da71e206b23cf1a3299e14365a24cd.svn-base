@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.User">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="login_name" property="loginName" /><!-- 登录账号 -->
+        <result column="login_pass" property="loginPass" /><!-- 登录密码 -->
+        <result column="login_time" property="loginTime" /><!-- 登录时间 -->
+        <result column="login_count" property="loginCount" /><!-- 登录次数 -->
+        <result column="name" property="name" /><!-- 昵称 -->
+        <result column="url" property="url" /><!-- 头像 -->
+        <result column="city" property="city" /><!-- 所属城市 -->
+        <result column="type" property="type" /><!-- 用户类型（0超级管理员、1普通用户） -->
+        <result column="role_id" property="roleId" /><!-- 角色id -->
+        <result column="login_ip" property="loginIp" /><!-- 登陆ip -->
+        <result column="wechat_user" property="wechatUser" /><!-- 微信账户 -->
+        <result column="wechat_image" property="wechatImage" /><!-- 微信头像 -->
+        <result column="money" property="money" /><!-- 账户余额 -->
+        <result column="phone" property="phone" /><!-- 手机号码 -->
+        <result column="fied1" property="fied1" /><!-- 备用字段1 -->
+        <result column="fied2" property="fied2" /><!-- 备用字段2 -->
+    </resultMap>
+<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			*
+		from user
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from user
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

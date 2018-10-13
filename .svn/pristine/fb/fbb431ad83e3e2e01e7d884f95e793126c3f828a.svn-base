@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.OrderItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.OrderItem">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="merchant_id" property="merchantId" /><!-- 门店编号 -->
+        <result column="userid" property="userid" /><!-- 用户id -->
+        <result column="is_pack" property="isPack" /><!-- 是否打包 -->
+        <result column="all_price" property="allPrice" /><!-- 订单总金额 -->
+        <result column="send_type" property="sendType" /><!-- 配送方式（0-自提 1-邮寄） -->
+        <result column="phone" property="phone" /><!-- 联系方式 -->
+        <result column="address" property="address" /><!-- 联系地址 -->
+        <result column="fied1" property="fied1" /><!-- 备用字段1 -->
+        <result column="fied2" property="fied2" /><!-- 备用字段2 -->
+        <result column="wechat_id" property="wechatId" /><!-- 微信账户 -->
+    </resultMap>
+
+<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			*
+		from order_item
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from order_item
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

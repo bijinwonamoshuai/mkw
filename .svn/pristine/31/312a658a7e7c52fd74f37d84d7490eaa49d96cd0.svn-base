@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mkw.core.mapper.OrderItemDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mkw.core.entity.OrderItemDetail">
+    	<result column="id" property="id" /><!-- 编号 -->
+    	<result column="enable" property="enable" /><!-- 是否可用（1是、0否） -->
+    	<result column="status" property="status" /><!-- 状态 -->
+    	<result column="ctime" property="ctime" /><!-- 创建时间 -->
+    	<result column="creater" property="creater" /><!-- 创建人 -->
+    	<result column="mtime" property="mtime" /><!-- 修改时间 -->
+    	<result column="modifier" property="modifier" /><!-- 修改人 -->
+    	<result column="dtime" property="dtime" /><!-- 删除时间 -->
+    	<result column="deleter" property="deleter" /><!-- 删除人 -->
+    	<result column="remark" property="remark" /><!-- 描述 -->
+        <result column="order_id" property="orderId" /><!-- 订单编号 -->
+        <result column="food_id" property="foodId" /><!-- 菜品id -->
+        <result column="origin_price" property="originPrice" /><!-- 菜品原价 -->
+        <result column="code" property="code" /><!-- 菜品编码 -->
+        <result column="name" property="name" /><!-- 菜品名称 -->
+        <result column="food_type" property="foodType" /><!-- 菜品类型 -->
+        <result column="price" property="price" /><!-- 菜品单价 -->
+        <result column="count" property="count" /><!-- 菜品数量 -->
+        <result column="food_image" property="foodImage" /><!-- 菜品图片 -->
+        <result column="sdandrd" property="sdandrd" /><!-- 规格（0-小 1-中 2-大） -->
+        <result column="fied1" property="fied1" /><!-- 备用字段1 -->
+        <result column="fied2" property="fied2" /><!-- 备用字段2 -->
+    </resultMap>
+
+<select id="queryByPageData" resultType="java.util.Map">
+		select 
+			o.id as id,
+			o.order_id as orderId,
+			o.food_id as foodId,
+			o.origin_price as originPrice,
+			o.food_type as foodType,
+			o.price as price
+		from order_item_detail o
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+		order by ctime desc, mtime desc
+		limit #{index}, #{limit}
+	</select>
+
+	<select id="queryByPageCount" resultType="java.lang.Integer">
+		select count(1) from order_item_detail
+		<where>
+			enable = 1
+			<if test="params.name != '' and params.name != 'null' and params.name != null">
+				<![CDATA[ and name like concat('%', #{params.name}, '%') ]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

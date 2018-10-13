@@ -1,0 +1,89 @@
+package com.mkw.core.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.alibaba.fastjson.JSON;
+import com.mkw.annotation.Logs;
+import com.mkw.annotation.Verify;
+import com.mkw.constant.KeyConstant;
+import com.mkw.constant.Operate;
+import com.mkw.core.common.SuperController;
+import com.mkw.core.entity.Account;
+import com.mkw.core.service.AccountService;
+import com.mkw.core.service.RoomService;
+import com.mkw.plugins.DataInfo;
+import com.mkw.util.AjaxUtils;
+
+/**
+ * @Description: 登录控制器
+ *
+ * @author xiaojiayi
+ * @date 2018年5月30日 下午3:01:55
+ */
+@Controller
+public class LoginController extends SuperController {
+	@Resource
+	private RoomService roomService;
+	@Resource
+	private AccountService accountService;
+	
+	@RequestMapping("main")
+	@Logs(operate = Operate.SELECT, module = "登录控制器", remark = "获取统计页")
+	public String main(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return "main";
+	}
+
+	@RequestMapping("login")
+	@Logs(operate = Operate.SELECT, module = "登录控制器", remark = "获取登录页")
+	public String login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return "login";
+	}
+	
+	@RequestMapping("/checkLogin")
+	@Verify(notNull="loginName,loginPass")
+	@Logs(operate = Operate.SELECT, module = "登录控制器", remark = "检查登录信息")
+	public void checkLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		
+		accountService.checkLogin(dataInfo, 1);
+		// 设置用户缓存信息
+		Account account = (Account) dataInfo.getResponseData();
+		if (null != account) {
+			setAttribute(request, KeyConstant.merchant.SESSION_ID, request.getSession().getId());
+			setAttribute(request, KeyConstant.merchant.SESSION_ACCOUNT_ID, account.getId());
+			setAttribute(request, KeyConstant.merchant.SESSION_ACCOUNT_INFO, JSON.toJSONString(account));
+		}
+		
+		AjaxUtils.outJson(response, dataInfo);
+	}
+	
+	@RequestMapping("home")
+	@Logs(operate = Operate.SELECT, module = "登录控制器", remark = "获取首页")
+	public String home(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Account account = JSON.parseObject(getAttribute(request, KeyConstant.colligate.SESSION_ACCOUNT_INFO), Account.class);
+		request.setAttribute("account", account);
+		return "home";
+	}
+	
+	@RequestMapping("findMenu")
+	@Verify(notNull="status,level")
+	@Logs(operate = Operate.UPDATE, module = "登录控制器", remark = "获取权限")
+	public void findMenu(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		DataInfo dataInfo = AjaxUtils.parseJson(request);
+		dataInfo = accountService.findMenu(dataInfo, findAuthor(request));
+		AjaxUtils.outJson(response, dataInfo);
+	}
+	
+	@RequestMapping("logout")
+	@Logs(module="登录控制器", operate=Operate.OTHER, remark="退出")
+	public String Logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// 设置session失效
+		request.getSession().invalidate();
+		return "redirect:/welcome.jsp";
+	}
+}

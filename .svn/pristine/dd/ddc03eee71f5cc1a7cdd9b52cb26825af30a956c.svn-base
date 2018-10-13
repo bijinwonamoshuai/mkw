@@ -1,0 +1,8 @@
+# system config
+domain = http://localhost:8080
+domain.merchant.name = http://localhost:8080/mkw-merchant
+domain.merchant.base = G://J2EE/ws1/apache-tomcat-7.0.77/webapps/mkw-merchant
+domain.client.name = http://localhost:8080/mkw-client
+domain.client.base = G://J2EE/ws1/apache-tomcat-7.0.77/webapps/mkw-merchant
+domain.colligate.name = http://localhost:8080/mkw-colligate
+domain.colligate.base = G://J2EE/ws1/apache-tomcat-7.0.77/webapps/mkw-colligate

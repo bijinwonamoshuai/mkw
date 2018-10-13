@@ -1,0 +1,72 @@
+var navs = [{
+	"title": "收营台",
+	"icon": "fa-pencil-square-o",
+	"spread": true,
+	"children": [{
+		"title": "广告素材库",
+		"icon": "&#xe641;",
+		"href": "/czs-client/user-advice/list-advice.do"
+	}, {
+		"title": "发布管理",
+		"icon": "fa-external-link",
+		"href": "/czs-client/user-group/group.do"
+	}, {
+		"title": "播放日志",
+		"icon": "&#xe63c;",
+		"href": "/czs-client/user-playLog/list-playLog.do"
+	}]
+}, {
+	"title": "门店管理",
+	"icon": "fa-cubes",
+	"spread": false,
+	"children": [{
+		"title": "终端监控",
+		"icon": "fa-windows",
+		"href": "/czs-client/user-pvuv/list-pvuv.do"
+	}]
+}, {
+	"title": "菜品管理",
+	"icon": "fa-universal-access",
+	"href": "",
+	"spread": false,
+	"children": [{
+		"title": "菜品列表",
+		"icon": "fa-audio-description",
+		"href": "/mkw-client/food/food-list.do"
+	}, {
+		"title": "广告推送",
+		"icon": "fa-share-alt",
+		"href": "/czs-client/ownDevicePush/list-ownDevice.do"
+	}, {
+		"title": "心跳",
+		"icon": "fa-heartbeat",
+		"href": "/czs-client/user-ownPvuv/list-own-pvuv.do"
+	}]
+}, {
+	"title": "订单管理",
+	"icon": "fa-cubes",
+	"spread": false,
+	"children": [{
+		"title": "终端监控",
+		"icon": "fa-windows",
+		"href": "/czs-client/user-pvuv/list-pvuv.do"
+	}]
+},{
+	"title": "会员管理",
+	"icon": "fa-cubes",
+	"spread": false,
+	"children": [{
+		"title": "终端监控",
+		"icon": "fa-windows",
+		"href": "/czs-client/user-pvuv/list-pvuv.do"
+	}]
+},{
+	"title": "账号权限管理",
+	"icon": "fa-cubes",
+	"spread": false,
+	"children": [{
+		"title": "终端监控",
+		"icon": "fa-windows",
+		"href": "/czs-client/user-pvuv/list-pvuv.do"
+	}]
+}];
